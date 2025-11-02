@@ -1,9 +1,17 @@
 # summarize.py
 
-import openai
+from openai import OpenAI # <-- Import the new 'OpenAI' class
 
 def summarize_articles(articles, api_key):
-    openai.api_key = api_key
+    
+    # --- FIX ---
+    # Initialize the client with the API key
+    try:
+        client = OpenAI(api_key=api_key)
+    except Exception as e:
+        print(f"❌ Failed to initialize OpenAI client: {e}")
+        return [] # Return empty list if client fails
+    
     summaries = []
 
     for article in articles:
@@ -12,7 +20,9 @@ def summarize_articles(articles, api_key):
             continue  # Skip if there's no content to summarize
 
         try:
-            response = openai.ChatCompletion.create(
+            # --- FIX ---
+            # This is the new syntax for making an API call
+            response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant that summarizes news articles."},
@@ -22,7 +32,10 @@ def summarize_articles(articles, api_key):
                 temperature=0.5
             )
 
-            summary = response["choices"][0]["message"]["content"].strip()
+            # --- FIX ---
+            # This is the new syntax for parsing the response
+            summary = response.choices[0].message.content.strip()
+            
             summaries.append({
                 "title": article["title"],
                 "url": article["url"],
@@ -30,6 +43,7 @@ def summarize_articles(articles, api_key):
             })
 
         except Exception as e:
-            print(f"Error summarizing article: {e}")
+            # Print the specific article title that failed
+            print(f"❌ Error summarizing article '{article.get('title', 'Unknown')}': {e}")
 
     return summaries
