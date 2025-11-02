@@ -5,12 +5,21 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 def send_email(recipient, articles):
-    sender = os.getenv("SENDER_EMAIL")  # e.g., dailyvalue.news@gmail.com
+    sender = os.getenv("SENDER_EMAIL")
+    api_key = os.getenv("SENDGRID_API_KEY")
+
+    if not sender or not api_key:
+        print("❌ Missing environment variables. Check your .env file.")
+        return
+
     subject = "Daily Value: Tennessee News"
     body = "Here are today's top Tennessee stories:\n\n"
 
     for article in articles:
-        body += f"{article['title']}\n{article['summary']}\nRead more: {article['url']}\n\n"
+        title = article.get("title", "Untitled")
+        summary = article.get("summary", "")
+        url = article.get("url", "")
+        body += f"{title}\n{summary}\nRead more: {url}\n\n"
 
     message = Mail(
         from_email=sender,
@@ -20,7 +29,7 @@ def send_email(recipient, articles):
     )
 
     try:
-        sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+        sg = SendGridAPIClient(api_key)
         response = sg.send(message)
         print(f"✅ Sent to {recipient} (Status: {response.status_code})")
     except Exception as e:
