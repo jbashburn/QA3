@@ -18,8 +18,10 @@ def add_subscriber(email):
     try:
         cursor.execute("INSERT INTO subscribers (email) VALUES (?)", (email,))
         conn.commit()
+        return True  # <-- ADDED: Return True on success
     except sqlite3.IntegrityError:
         print("Email already exists.")
+        return False # <-- ADDED: Return False on duplicate error
 
 def get_subscribers():
     cursor.execute("SELECT email FROM subscribers")
