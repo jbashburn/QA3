@@ -9,7 +9,7 @@ load_dotenv()
 # Securely access API keys
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-EMAIL_API_KEY = os.getenv("EMAIL_API_KEY")  # Optional if using SMTP
+EMAIL_API_KEY = os.getenv("EMAIL_API_KEY") 
 
 # Import your custom modules
 import database
@@ -18,32 +18,32 @@ import summarize
 import emailer
 
 def generate_newsletter():
-    """Returns the formatted newsletter content as a string."""
+    """Fetches and summarizes articles, returning a LIST of dicts."""
     articles = fetch_news.get_tennessee_news(NEWS_API_KEY)
+    # This list now contains 'title', 'url', and 'summary'
     summarized_articles = summarize.summarize_articles(articles, OPENAI_API_KEY)
-
-    # Format the newsletter body
-    email_body = ""
-    for item in summarized_articles:
-        title = item.get("title", "Untitled")
-        summary = item.get("summary", "")
-        url = item.get("url", "")
-        email_body += f"📰 {title}\n\n{summary}\nRead more: {url}\n\n{'-'*60}\n\n"
-
-    return email_body
+    return summarized_articles # <-- FIX: Return the list directly
 
 def run_newsletter():
-    # Step 1: Generate newsletter content
-    email_body = generate_newsletter()
+    # Step 1: Generate newsletter content (this is now a list)
+    articles_list = generate_newsletter()
+
+    if not articles_list:
+        print("❌ No articles found. Newsletter not sent.")
+        return
 
     # Step 2: Get subscriber emails from the database
     subscribers = database.get_subscribers()
+    if not subscribers:
+        print("❌ No subscribers found. Newsletter not sent.")
+        return
 
     # Step 3: Send the newsletter to each subscriber
+    # We pass the full list of articles to the emailer
     for email in subscribers:
-        emailer.send_email(email, email_body)
+        emailer.send_email(email, articles_list)
 
-    print("✅ Daily Value newsletter sent successfully!")
+    print(f"✅ Daily Value newsletter sent to {len(subscribers)} subscribers!")
 
 if __name__ == "__main__":
     run_newsletter()
