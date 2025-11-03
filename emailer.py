@@ -2,25 +2,85 @@
 
 import os
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Content
+from sendgrid.helpers.mail import Mail
+import datetime
 
-def send_email(recipient, body_string):
+def send_email(recipient, articles_list):
+    """
+    Builds a professional HTML email from the list of articles
+    and sends it via SendGrid.
+    """
     sender = os.getenv("SENDER_EMAIL")
     api_key = os.getenv("SENDGRID_API_KEY")
-
     if not sender or not api_key:
         print("❌ Missing environment variables. Check your .env file.")
         return
+    
+    today_date = datetime.date.today().strftime("%B %d, %Y")
+    subject = f"Your Daily Tennessee News: {today_date}"
 
-    subject = "Daily Value: Tennessee News"
+    # --- 1. Build Plain Text Fallback ---
+    text_body = f"Daily Value: Tennessee News\n{today_date}\n\n"
+    for article in articles_list:
+        text_body += f"📰 {article.get('title', 'Untitled')}\n"
+        text_body += f"{article.get('summary', 'No summary.')}\n"
+        text_body += f"Read more: {article.get('url', '#')}\n\n"
+        text_body += "-"*60 + "\n"
 
-    # Use the pre-formatted string directly for plain text
-    text_body = body_string
+    # --- 2. Build Professional HTML Body ---
+    html_body = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td align="center" style="padding: 20px 0;">
+                    <table width="600" border="0" cellspacing="0" cellpadding="0" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                        
+                        <tr>
+                            <td align="center" style="background-color: #2196F3; color: white; padding: 30px 20px;">
+                                <h1 style="margin: 0; font-size: 28px;">Daily Value News</h1>
+                                <p style="margin: 5px 0 0; font-size: 16px;">Your Tennessee Update for {today_date}</p>
+                            </td>
+                        </tr>
 
-    # Create an HTML version by replacing newline characters with <br> tags
-    # This makes it look correct in an HTML email client.
-    html_body = body_string.replace("\n\n", "<br><br>").replace("\n", "<br>")
+                        """
 
+    for article in articles_list:
+        title = article.get('title', 'Untitled')
+        summary = article.get('summary', 'No summary.')
+        url = article.get('url', '#')
+
+        html_body += f"""
+                        <tr>
+                            <td style="padding: 30px 20px; border-bottom: 1px solid #eee;">
+                                <h2 style="margin: 0 0 10px; font-size: 22px;">
+                                    <a href="{url}" style="color: #333; text-decoration: none;">{title}</a>
+                                </h2>
+                                <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.5; color: #555;">
+                                    {summary}
+                                </p>
+                                <a href="{url}" style="color: #2196F3; text-decoration: none; font-weight: bold; font-size: 16px;">
+                                    Read Full Article &rarr;
+                                </a>
+                            </td>
+                        </tr>
+        """
+
+    html_body += """
+                        <tr>
+                            <td align="center" style="background-color: #f9f9f9; color: #777; padding: 20px; font-size: 12px;">
+                                <p style="margin: 0;">&copy; {datetime.date.today().year} Daily Value News. All rights reserved.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+
+    # --- 3. Create and Send Mail ---
     message = Mail(
         from_email=sender,
         to_emails=recipient,
@@ -34,7 +94,6 @@ def send_email(recipient, body_string):
         response = sg.send(message)
         print(f"✅ Sent to {recipient} (Status: {response.status_code})")
 
-        # Log the send
         with open("send_log.txt", "a", encoding="utf-8") as log:
             log.write(f"Sent to {recipient} | Status: {response.status_code}\n")
 
