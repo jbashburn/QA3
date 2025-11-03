@@ -2,9 +2,9 @@
 
 import os
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import Mail, Content
 
-def send_email(recipient, articles):
+def send_email(recipient, body_string):
     sender = os.getenv("SENDER_EMAIL")
     api_key = os.getenv("SENDGRID_API_KEY")
 
@@ -13,24 +13,30 @@ def send_email(recipient, articles):
         return
 
     subject = "Daily Value: Tennessee News"
-    body = "Here are today's top Tennessee stories:\n\n"
 
-    for article in articles:
-        title = article.get("title", "Untitled")
-        summary = article.get("summary", "")
-        url = article.get("url", "")
-        body += f"{title}\n{summary}\nRead more: {url}\n\n"
+    # Use the pre-formatted string directly for plain text
+    text_body = body_string
+
+    # Create an HTML version by replacing newline characters with <br> tags
+    # This makes it look correct in an HTML email client.
+    html_body = body_string.replace("\n\n", "<br><br>").replace("\n", "<br>")
 
     message = Mail(
         from_email=sender,
         to_emails=recipient,
         subject=subject,
-        plain_text_content=body
+        plain_text_content=text_body,
+        html_content=html_body
     )
 
     try:
         sg = SendGridAPIClient(api_key)
         response = sg.send(message)
         print(f"✅ Sent to {recipient} (Status: {response.status_code})")
+
+        # Log the send
+        with open("send_log.txt", "a", encoding="utf-8") as log:
+            log.write(f"Sent to {recipient} | Status: {response.status_code}\n")
+
     except Exception as e:
         print(f"❌ Error sending to {recipient}: {e}")
