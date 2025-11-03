@@ -76,4 +76,7 @@ send_btn_frame.pack(pady=10)
 tk.Button(send_btn_frame, text="Load Preview", command=load_preview, bg="#2196F3", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
 tk.Button(send_btn_frame, text="Send Newsletter", command=send_newsletter, bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
 
+# This tells tkinter to wait 100ms and then run the load_preview function.
+root.after(100, load_preview)
+
 root.mainloop()
