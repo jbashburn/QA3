@@ -5,7 +5,8 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import datetime
 
-def send_email(recipient, articles_list):
+# --- UPDATE THE FUNCTION DEFINITION ---
+def send_email(recipient, articles_list, subject="Your Daily News"):
     """
     Builds a professional HTML email from the list of articles
     and sends it via SendGrid.
@@ -17,10 +18,10 @@ def send_email(recipient, articles_list):
         return
     
     today_date = datetime.date.today().strftime("%B %d, %Y")
-    subject = f"Your Daily Tennessee News: {today_date}"
 
     # --- 1. Build Plain Text Fallback ---
-    text_body = f"Daily Value: Tennessee News\n{today_date}\n\n"
+    # Update the header
+    text_body = f"Daily Value: Business News\n{today_date}\n\n"
     for article in articles_list:
         text_body += f"📰 {article.get('title', 'Untitled')}\n"
         text_body += f"{article.get('summary', 'No summary.')}\n"
@@ -39,7 +40,7 @@ def send_email(recipient, articles_list):
                         <tr>
                             <td align="center" style="background-color: #2196F3; color: white; padding: 30px 20px;">
                                 <h1 style="margin: 0; font-size: 28px;">Daily Value News</h1>
-                                <p style="margin: 5px 0 0; font-size: 16px;">Your Tennessee Update for {today_date}</p>
+                                <p style="margin: 5px 0 0; font-size: 16px;">Your Business Update for {today_date}</p>
                             </td>
                         </tr>
 
@@ -84,7 +85,7 @@ def send_email(recipient, articles_list):
     message = Mail(
         from_email=sender,
         to_emails=recipient,
-        subject=subject,
+        subject=subject, # <-- This now uses the passed-in subject
         plain_text_content=text_body,
         html_content=html_body
     )

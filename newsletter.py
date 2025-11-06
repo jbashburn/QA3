@@ -5,10 +5,11 @@ from tkinter import messagebox, scrolledtext, END
 import database
 import main
 import emailer
+import datetime # <-- IMPORT DATETIME
 
-# This global list stores the articles after "Load Preview" is clicked,
-# so the "Send" button can use the full data for the HTML email.
+# This global list stores the articles after "Load Preview" is clicked
 current_articles_list = []
+email_subject = "Today's Top Business News" # <-- DEFINE SUBJECT
 
 def load_preview():
     """Fetches articles, stores them, and shows a plain-text preview."""
@@ -19,8 +20,11 @@ def load_preview():
             messagebox.showwarning("No Articles", "No articles were found.")
             return
 
-        # Format a plain-text preview
-        preview_text = "--- TODAY'S TENNESSEE NEWS ---\n\n"
+        # --- TIMESTAMP FIX ---
+        # Get the current time to prove it's refreshing
+        now = datetime.datetime.now().strftime("%I:%M:%S %p")
+        preview_text = f"--- TODAY'S BUSINESS NEWS (Fetched at: {now}) ---\n\n"
+
         for item in current_articles_list:
             preview_text += (
                 f"{item.get('title', 'Untitled')}\n\n"
@@ -49,7 +53,8 @@ def send_newsletter():
             return
         
         for email in subscribers:
-            emailer.send_email(email, current_articles_list) 
+            # --- PASS THE SUBJECT ---
+            emailer.send_email(email, current_articles_list, email_subject) 
         
         messagebox.showinfo("Sent", f"Newsletter sent to {len(subscribers)} subscribers!")
     
@@ -64,7 +69,8 @@ root.geometry("700x550")
 root.configure(bg="white")
 root.resizable(False, False)
 
-tk.Label(root, text="Newsletter Preview & Sender", font=("Helvetica", 20, "bold"), fg="#4CAF50", bg="white").pack(pady=(20, 10))
+# --- UPDATE GUI TEXT ---
+tk.Label(root, text="Business News Preview & Sender", font=("Helvetica", 20, "bold"), fg="#4CAF50", bg="white").pack(pady=(20, 10))
 tk.Label(root, text="Load a preview of the newsletter, then send it to all subscribers.", font=("Helvetica", 12), bg="white").pack(pady=(0, 10))
 
 preview_box = scrolledtext.ScrolledText(root, wrap=tk.WORD, font=("Helvetica", 12), width=80, height=20)
@@ -73,10 +79,11 @@ preview_box.pack(padx=20, pady=10)
 send_btn_frame = tk.Frame(root, bg="white")
 send_btn_frame.pack(pady=10)
 
-tk.Button(send_btn_frame, text="Load Preview", command=load_preview, bg="#2196F3", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
+# --- RENAME BUTTON ---
+tk.Button(send_btn_frame, text="Refresh News", command=load_preview, bg="#2196F3", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
 tk.Button(send_btn_frame, text="Send Newsletter", command=send_newsletter, bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
 
-# This tells tkinter to wait 100ms and then run the load_preview function.
-root.after(100, load_preview)
+# Auto-load the preview
+root.after(1, load_preview)
 
 root.mainloop()

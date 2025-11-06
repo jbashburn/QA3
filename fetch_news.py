@@ -1,43 +1,34 @@
 # fetch_news.py
 
 import requests
+import random # <-- IMPORT RANDOM
 
-def get_tennessee_news(api_key): # This 'api_key' variable is the one we need to use
+def get_business_news(api_key):
     """
-    Fetches Tennessee news by searching titles for a broad list of keywords.
+    Fetches the latest articles directly from a list of top-tier
+    business and finance domains.
     """
     
-    keywords = [
-        # State & Regions
-        "Tennessee", '"Middle Tennessee"', '"East Tennessee"', '"West Tennessee"', '"Upper Cumberland"',
-        
-        # Major Cities
-        "Nashville", "Memphis", "Knoxville", "Chattanooga", "Murfreesboro", "Franklin",
-        "Johnson City", "Gatlinburg",
-        
-        # State-Specific Topics
-        '"Smoky Mountains"', '"TVA"', '"Bill Lee"',
-        
-        # Sports Teams
-        '"Tennessee Titans"', '"Nashville Predators"', '"Memphis Grizzlies"', '"Tennessee Vols"'
-    ]
-    query = " OR ".join(keywords)
-
+    # Use the /everything endpoint
     url = "https://newsapi.org/v2/everything"
     
+    # Define your high-quality domains
+    your_domains = "bloomberg.com,forbes.com,businessinsider.com,economist.com"
+    
+    # --- THIS IS THE FIX ---
+    # Ask for a different page (1-5) each time to get new content
+    page_to_fetch = random.randint(1, 5)
+
     params = {
-        "q": query,
-        "searchIn": "title",
+        "domains": your_domains, 
         "language": "en",
-        "sortBy": "publishedAt",
-        "pageSize": 5,
-        
-        # --- THIS IS THE FIX ---
-        # Use the 'api_key' variable passed into the function
+        "sortBy": "publishedAt", 
+        "pageSize": 5, 
+        "page": page_to_fetch, # <-- ADD THE RANDOM PAGE
         "apiKey": api_key 
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params) 
     data = response.json()
 
     articles = []
@@ -46,10 +37,9 @@ def get_tennessee_news(api_key): # This 'api_key' variable is the one we need to
             articles.append({
                 "title": item["title"],
                 "url": item["url"],
-                "content": item["content"] or item["description"]
+                "content": item["description"] or "" 
             })
     else:
-        # If it fails, this will print the real error (like 'apiKeyInvalid')
         print(f"❌ Error fetching news: {data.get('message')}")
 
     return articles
