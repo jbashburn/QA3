@@ -23,7 +23,8 @@ def send_email(recipient, articles_list, subject="Daily Value: AI-Powered News S
     # Update the header
     text_body = f"Today's Top Business News\n{today_date}\n\n"
     for article in articles_list:
-        text_body += f"📰 {article.get('title', 'Untitled')}\n"
+        source = article.get('source', 'Unknown Source').upper() # <-- NEW
+        text_body += f"📰 {source} - {article.get('title', 'Untitled')}\n" # <-- UPDATED
         text_body += f"{article.get('summary', 'No summary.')}\n"
         text_body += f"Read more: {article.get('url', '#')}\n\n"
         text_body += "-"*60 + "\n"
@@ -50,10 +51,14 @@ def send_email(recipient, articles_list, subject="Daily Value: AI-Powered News S
         title = article.get('title', 'Untitled')
         summary = article.get('summary', 'No summary.')
         url = article.get('url', '#')
+        source = article.get('source', 'Unknown Source').upper() # <-- NEW
 
         html_body += f"""
                         <tr>
                             <td style="padding: 30px 20px; border-bottom: 1px solid #eee;">
+                                <p style="margin:0 0 10px; font-size:12px; font-weight:bold; color:#555; display:inline-block; padding: 4px 10px; background-color:#f0f0f0; border-radius:12px;">
+                                    📰 {source}
+                                </p>
                                 <h2 style="margin: 0 0 10px; font-size: 22px;">
                                     <a href="{url}" style="color: #333; text-decoration: none;">{title}</a>
                                 </h2>
@@ -86,7 +91,7 @@ def send_email(recipient, articles_list, subject="Daily Value: AI-Powered News S
     message = Mail(
         from_email=sender,
         to_emails=recipient,
-        subject=subject, # <-- This now uses the passed-in subject
+        subject=subject, 
         plain_text_content=text_body,
         html_content=html_body
     )

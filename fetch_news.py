@@ -23,14 +23,11 @@ def get_business_news(api_key):
         '"corporate earnings"', '"investing"'  
     ]
     
-    # --- THIS IS THE FIX ---
     # 1. Randomly pick 3 keywords from the list
     chosen_keywords = random.sample(keyword_options, 3) 
     
     # 2. Join those 3 random keywords with " OR "
     your_keywords = " OR ".join(chosen_keywords)
-    # This creates a query like: '"stocks" OR "economy" OR "business"'
-    # And the next refresh might be: '"inflation" OR "markets" OR "startups"'
 
     # --- 3. THE REFRESH FIX (Forces new articles) ---
     cache_buster = datetime.datetime.now().isoformat()
@@ -55,7 +52,8 @@ def get_business_news(api_key):
             articles.append({
                 "title": item["title"],
                 "url": item["url"],
-                "content": item["description"] or ""
+                "content": item["description"] or "",
+                "source": item["source"]["name"]  
             })
     else:
         print(f"❌ Error fetching news: {data.get('message')}")

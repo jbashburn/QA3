@@ -56,15 +56,13 @@ def load_preview():
             title = item.get('title', 'Untitled')
             summary = item.get('summary', 'No summary.')
             url = item.get('url', '#')
+            source = item.get('source', 'Unknown Source').upper() # <-- NEW
 
-            # Insert title (let's make it bold!)
-            preview_box.insert(END, f"{title}\n\n", "bold_title") # <-- NEW
-            
-            # Insert summary
+            # Insert source, title, summary, and link
+            preview_box.insert(END, f"📰 {source}\n", "source_tag") # <-- NEW
+            preview_box.insert(END, f"{title}\n\n", "bold_title") 
             preview_box.insert(END, f"{summary}\n\n")
-            
-            # Insert the clickable link
-            preview_box.insert(END, f"Read more: {url}\n", "link") # <-- NEW
+            preview_box.insert(END, f"Read more: {url}\n", "link") 
             
             # Insert the separator
             preview_box.insert(END, f"{'-'*60}\n\n")
@@ -104,18 +102,19 @@ root.geometry("700x550")
 root.configure(bg="white")
 root.resizable(False, False)
 
-# --- Your updated GUI text ---
+# --- GUI text ---
 tk.Label(root, text="Daily Value News Preview & Sender", font=("Arial", 18, "bold"), fg="#A382CA", bg="white").pack(pady=(20, 10))
 tk.Label(root, text="Load a preview of the newsletter, then send it to all subscribers.", font=("Helvetica", 12), bg="white").pack(pady=(0, 10))
 
 preview_box = scrolledtext.ScrolledText(root, wrap=tk.WORD, font=("Arial", 11), width=80, height=20)
 preview_box.pack(padx=20, pady=10)
 
-# --- NEW: Configure the tags for our links and titles ---
+# ---  Configure the tags for our links and titles ---
 preview_box.tag_config("link", foreground="blue", underline=True)
 preview_box.tag_config("bold_title", font=("Arial", 12, "bold"))
+preview_box.tag_config("source_tag", font=("Arial", 10, "bold"), foreground="#555555") # <-- NEW
 
-# --- NEW: Bind mouse events to the "link" tag ---
+# ---  Bind mouse events to the "link" tag ---
 preview_box.tag_bind("link", "<Button-1>", open_link) # Left-click
 preview_box.tag_bind("link", "<Enter>", lambda e: preview_box.config(cursor="hand2")) # Mouse enter
 preview_box.tag_bind("link", "<Leave>", lambda e: preview_box.config(cursor=""))     # Mouse leave

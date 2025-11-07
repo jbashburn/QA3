@@ -39,7 +39,8 @@ def summarize_articles(articles, api_key):
             summaries.append({
                 "title": article["title"],
                 "url": article["url"],
-                "summary": summary
+                "summary": summary,
+                "source": article.get("source") 
             })
 
         except Exception as e:
