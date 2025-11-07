@@ -24,7 +24,7 @@ def send_email(recipient, articles_list, subject="Daily Value: AI-Powered News S
     text_body = f"Today's Top Business News\n{today_date}\n\n"
     for article in articles_list:
         source = article.get('source', 'Unknown Source').upper() # <-- NEW
-        text_body += f"📰 {source} - {article.get('title', 'Untitled')}\n" # <-- UPDATED
+        text_body += f"{source} - {article.get('title', 'Untitled')}\n" # <-- UPDATED
         text_body += f"{article.get('summary', 'No summary.')}\n"
         text_body += f"Read more: {article.get('url', '#')}\n\n"
         text_body += "-"*60 + "\n"
