@@ -1,6 +1,6 @@
 # 📰 Daily Value Newsletter
 
-An AI-powered Python app that fetches Tennessee news, summarizes it using OpenAI, and emails it to subscribers daily.
+An AI-powered Python app that fetches business and finance news, summarizes it using OpenAI, and emails it to subscribers daily.
 
 ---
 
@@ -26,7 +26,7 @@ Runs the full workflow:
 5. Sends emails via `emailer.py`
 
 ### `fetch_news.py`
-Pulls recent Tennessee-related articles using keywords like “Nashville” and “Memphis”.
+Pulls recent business and finance-related articles using domain and keyword filters.
 
 ### `summarize.py`
 Uses OpenAI’s GPT model to condense each article into 3–4 sentences.
@@ -40,11 +40,15 @@ Formats and sends the newsletter using SendGrid. Each email includes:
 - AI-generated summary  
 - Link to full article
 
-### `gui.py`
-Simple Tkinter interface:
-- White background, light blue title  
+### `manage_subscribers.py`
+Simple Tkinter interface: 
 - Description and email input  
 - “Subscribe” button adds email to database
+
+### `newsletter.py`
+Tkinter interface:
+- Preview news article summaries  
+- "Refresh" and "Send" button
 
 ---
 
@@ -60,7 +64,7 @@ Simple Tkinter interface:
 ## 🧪 Installation
 
 ```bash
-pip install -r requirements.txt
+py pip install -r requirements.txt
 
 Required packages include:
 - openai
@@ -79,14 +83,14 @@ SENDER_EMAIL=your_verified_sender_email
 
 
 run the GUI to add subscribers:
-python gui.py
+python manage_subscribers.py
 
 S
 python main.py
 
 🛠️ Customization
 This project is modular and easy to adapt. Developers can:
-- Replace keywords in fetch_news.py to target different regions or topics
+- Replace domains and keywords in fetch_news.py to target different topics
 - Modify the prompt in summarize.py to change tone or length
 - Use their own .env file with personal API keys
 - Customize the GUI layout or branding
