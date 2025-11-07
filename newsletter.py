@@ -70,7 +70,7 @@ root.configure(bg="white")
 root.resizable(False, False)
 
 # --- UPDATE GUI TEXT ---
-tk.Label(root, text="Business News Preview & Sender", font=("Helvetica", 20, "bold"), fg="#4CAF50", bg="white").pack(pady=(20, 10))
+tk.Label(root, text="Business News Preview & Sender", font=("Helvetica", 20, "bold"), fg="#A382CA", bg="white").pack(pady=(20, 10))
 tk.Label(root, text="Load a preview of the newsletter, then send it to all subscribers.", font=("Helvetica", 12), bg="white").pack(pady=(0, 10))
 
 preview_box = scrolledtext.ScrolledText(root, wrap=tk.WORD, font=("Helvetica", 12), width=80, height=20)
@@ -80,8 +80,8 @@ send_btn_frame = tk.Frame(root, bg="white")
 send_btn_frame.pack(pady=10)
 
 # --- RENAME BUTTON ---
-tk.Button(send_btn_frame, text="Refresh News", command=load_preview, bg="#2196F3", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
-tk.Button(send_btn_frame, text="Send Newsletter", command=send_newsletter, bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
+tk.Button(send_btn_frame, text="Refresh News", command=load_preview, bg="#95A7FF", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
+tk.Button(send_btn_frame, text="Send Newsletter", command=send_newsletter, bg="#95A7FF", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
 
 # Auto-load the preview
 root.after(1, load_preview)

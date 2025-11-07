@@ -103,8 +103,8 @@ subscriber_listbox.pack(side=tk.LEFT)
 # --- Button Frame (for Edit and Delete) ---
 btn_frame = tk.Frame(root, bg="white")
 btn_frame.pack(pady=10)
-tk.Button(btn_frame, text="Edit Selected", command=edit_selected_subscriber, bg="#FF9800", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
-tk.Button(btn_frame, text="Delete Selected", command=delete_selected_subscriber, bg="#f44336", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
+tk.Button(btn_frame, text="Edit Selected", command=edit_selected_subscriber, bg="#ABC6F8", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
+tk.Button(btn_frame, text="Delete Selected", command=delete_selected_subscriber, bg="#dcb1ff", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
 
 populate_subscriber_list()
 root.mainloop()
