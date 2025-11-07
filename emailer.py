@@ -6,7 +6,7 @@ from sendgrid.helpers.mail import Mail
 import datetime
 
 # --- UPDATE THE FUNCTION DEFINITION ---
-def send_email(recipient, articles_list, subject="Your Daily News"):
+def send_email(recipient, articles_list, subject="Daily Value: AI-Powered News Stories"):
     """
     Builds a professional HTML email from the list of articles
     and sends it via SendGrid.
@@ -21,7 +21,7 @@ def send_email(recipient, articles_list, subject="Your Daily News"):
 
     # --- 1. Build Plain Text Fallback ---
     # Update the header
-    text_body = f"Daily Value: Business News\n{today_date}\n\n"
+    text_body = f"Today's Top Business News\n{today_date}\n\n"
     for article in articles_list:
         text_body += f"📰 {article.get('title', 'Untitled')}\n"
         text_body += f"{article.get('summary', 'No summary.')}\n"
@@ -39,8 +39,8 @@ def send_email(recipient, articles_list, subject="Your Daily News"):
                         
                         <tr>
                             <td align="center" style="background-color: #2196F3; color: white; padding: 30px 20px;">
-                                <h1 style="margin: 0; font-size: 28px;">Daily Value News</h1>
-                                <p style="margin: 5px 0 0; font-size: 16px;">Your Business Update for {today_date}</p>
+                                <h1 style="margin: 0; font-size: 25px;">Daily Value News</h1>
+                                <p style="margin: 5px 0 0; font-size: 16px;">Your AI-Powered Business & Finance Newsletter for {today_date}</p>
                             </td>
                         </tr>
 
@@ -57,7 +57,7 @@ def send_email(recipient, articles_list, subject="Your Daily News"):
                                 <h2 style="margin: 0 0 10px; font-size: 22px;">
                                     <a href="{url}" style="color: #333; text-decoration: none;">{title}</a>
                                 </h2>
-                                <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.5; color: #555;">
+                                <p style="margin: 0 0 20px; font-size: 14px; line-height: 1.5; color: #555;">
                                     {summary}
                                 </p>
                                 <a href="{url}" style="color: #2196F3; text-decoration: none; font-weight: bold; font-size: 16px;">
@@ -67,7 +67,8 @@ def send_email(recipient, articles_list, subject="Your Daily News"):
                         </tr>
         """
 
-    html_body += """
+    # --- THIS IS THE FIX: Added 'f' to the line below ---
+    html_body += f"""
                         <tr>
                             <td align="center" style="background-color: #f9f9f9; color: #777; padding: 20px; font-size: 12px;">
                                 <p style="margin: 0;">&copy; {datetime.date.today().year} Daily Value News. All rights reserved.</p>
@@ -95,8 +96,13 @@ def send_email(recipient, articles_list, subject="Your Daily News"):
         response = sg.send(message)
         print(f"✅ Sent to {recipient} (Status: {response.status_code})")
 
+        # --- THIS IS THE TIMESTAMP FIX ---
+        # 1. Get the current timestamp
+        now = datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
+
         with open("send_log.txt", "a", encoding="utf-8") as log:
-            log.write(f"Sent to {recipient} | Status: {response.status_code}\n")
+            # 2. Write the new log format
+            log.write(f"{now} | Sent to {recipient} | Status: {response.status_code}\n")
 
     except Exception as e:
         print(f"❌ Error sending to {recipient}: {e}")

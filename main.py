@@ -38,7 +38,7 @@ def run_newsletter():
     for email in subscribers:
         # --- PASS THE SUBJECT ---
         emailer.send_email(email, articles_list, subject)
-    print(f"✅ Business newsletter sent to {len(subscribers)} subscribers!")
+    print(f"✅ Daily Value newsletter sent to {len(subscribers)} subscribers!")
 
 if __name__ == "__main__":
     run_newsletter()

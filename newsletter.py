@@ -49,7 +49,7 @@ def load_preview():
         preview_box.delete("1.0", END)
 
         now = datetime.datetime.now().strftime("%I:%M:%S %p")
-        preview_box.insert(END, f"--- TODAY'S BUSINESS NEWS (Fetched at: {now}) ---\n\n")
+        preview_box.insert(END, f"--- TODAY'S BUSINESS & FINANCE NEWS (Fetched at: {now}) ---\n\n")
 
         # --- UPDATE: Insert articles one by one to apply tags ---
         for item in current_articles_list:
@@ -105,15 +105,15 @@ root.configure(bg="white")
 root.resizable(False, False)
 
 # --- Your updated GUI text ---
-tk.Label(root, text="Business News Preview & Sender", font=("Helvetica", 20, "bold"), fg="#A382CA", bg="white").pack(pady=(20, 10))
+tk.Label(root, text="Daily Value News Preview & Sender", font=("Arial", 18, "bold"), fg="#A382CA", bg="white").pack(pady=(20, 10))
 tk.Label(root, text="Load a preview of the newsletter, then send it to all subscribers.", font=("Helvetica", 12), bg="white").pack(pady=(0, 10))
 
-preview_box = scrolledtext.ScrolledText(root, wrap=tk.WORD, font=("Helvetica", 12), width=80, height=20)
+preview_box = scrolledtext.ScrolledText(root, wrap=tk.WORD, font=("Arial", 11), width=80, height=20)
 preview_box.pack(padx=20, pady=10)
 
 # --- NEW: Configure the tags for our links and titles ---
 preview_box.tag_config("link", foreground="blue", underline=True)
-preview_box.tag_config("bold_title", font=("Helvetica", 13, "bold"))
+preview_box.tag_config("bold_title", font=("Arial", 12, "bold"))
 
 # --- NEW: Bind mouse events to the "link" tag ---
 preview_box.tag_bind("link", "<Button-1>", open_link) # Left-click
@@ -127,8 +127,8 @@ send_btn_frame = tk.Frame(root, bg="white")
 send_btn_frame.pack(pady=10)
 
 # --- Your updated buttons/colors ---
-tk.Button(send_btn_frame, text="Refresh News", command=load_preview, bg="#95A7FF", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
-tk.Button(send_btn_frame, text="Send Newsletter", command=send_newsletter, bg="#95A7FF", fg="white", font=("Helvetica", 12, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
+tk.Button(send_btn_frame, text="Refresh News", command=load_preview, bg="#95A7FF", fg="white", font=("Arial", 11, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
+tk.Button(send_btn_frame, text="Send Newsletter", command=send_newsletter, bg="#95A7FF", fg="white", font=("Arial", 11, "bold"), padx=10, pady=5).pack(side=tk.LEFT, padx=10)
 
 # Auto-load the preview
 root.after(1, load_preview)
