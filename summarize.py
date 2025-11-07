@@ -25,8 +25,8 @@ def summarize_articles(articles, api_key):
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant that summarizes news articles."},
-                    {"role": "user", "content": f"Summarize this article in 3-4 sentences:\n\n{content}"}
+                    {"role": "system", "content": "You are an assistant that summarizes news articles."},
+                    {"role": "user", "content": f"Summarize this article in an engaging way, in 4-5 sentences:\n\n{content}"}
                 ],
                 max_tokens=150,
                 temperature=0.5

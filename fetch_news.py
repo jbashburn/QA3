@@ -1,8 +1,7 @@
-
 # fetch_news.py
 import requests
-import datetime  # <-- CHANGED from 'time' to 'datetime'
-import random    # <-- NEW: for random keyword selection
+import datetime
+import random  
 
 def get_business_news(api_key):
     """
@@ -11,33 +10,40 @@ def get_business_news(api_key):
     powerful cache-buster.
     """
 
-    # Use the /everything endpoint (it's the only one that supports 'q' and 'domains')
     url = "https://newsapi.org/v2/everything"
 
     # --- 1. THE DOMAIN FILTER ---
-    your_domains = "bloomberg.com,forbes.com,businessinsider.com,economist.com,reuters.com"
+    your_domains = "forbes.com,businessinsider.com,cnbc.com,wsj.com,bloomberg.com"
 
     # --- 2. THE QUALITY FILTER ---
     keyword_options = [
         '"business"', '"finance"', '"markets"', '"economy"',
         '"stocks"', '"wall street"', '"entrepreneurship"', '"startups"',
-        '"inflation"', '"interest rates"', '"corporate earnings"'
+        '"inflation"', '"interest rates"', 
+        '"corporate earnings"', '"investing"'  
     ]
-    your_keywords = random.choice(keyword_options)  # <-- NEW: random keyword each time
+    
+    # --- THIS IS THE FIX ---
+    # 1. Randomly pick 3 keywords from the list
+    chosen_keywords = random.sample(keyword_options, 3) 
+    
+    # 2. Join those 3 random keywords with " OR "
+    your_keywords = " OR ".join(chosen_keywords)
+    # This creates a query like: '"stocks" OR "economy" OR "business"'
+    # And the next refresh might be: '"inflation" OR "markets" OR "startups"'
 
     # --- 3. THE REFRESH FIX (Forces new articles) ---
-    # This creates a 100% unique string every time.
     cache_buster = datetime.datetime.now().isoformat()
 
     params = {
-        "q": your_keywords,       # <-- Add keywords
-        "domains": your_domains,  # <-- Add domains
+        "q": your_keywords,       # <-- Sends the new random "OR" string
+        "domains": your_domains,
         "language": "en",
-        "searchIn": "title",      # <-- Search titles for max relevance
+        "searchIn": "title",    
         "sortBy": "publishedAt",
         "pageSize": 5,
         "apiKey": api_key,
-        "t": cache_buster         # <-- Add the unique cache buster
+        "t": cache_buster       
     }
 
     response = requests.get(url, params=params)
